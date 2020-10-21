@@ -1,6 +1,6 @@
 --[=[
 
-Docs: https://devforum.roblox.com/t/graph-module-easily-draw-graphs-of-your-data/828982
+Docs: https://devforum.roblox.com/t/graph-module-easily-draw-graphs-of-your-data/828982/1
 
 API:
 
@@ -52,11 +52,13 @@ function Graph.new(Frame)
 	local Busy = false
 	
 	-- Create the GUIs
+	local BaseZIndex = GraphHandler.Frame.ZIndex
 
 	local Background = Instance.new("Frame")
 	Background.Name = "Background"
 	Background.BackgroundColor3 = Theme.Background
 	Background.Size = UDim2.new(1,0,1,0)
+	Background.ZIndex = BaseZIndex+1
 	Background.Parent = GraphHandler.Frame
 
 	local MarkerBG = Instance.new("Frame")
@@ -64,7 +66,7 @@ function Graph.new(Frame)
 	MarkerBG.Size = UDim2.new(0.1,0,1,0)
 	MarkerBG.BackgroundColor3 = Theme.LightBackground
 	MarkerBG.BorderSizePixel = 0
-	MarkerBG.ZIndex = 1
+	MarkerBG.ZIndex = BaseZIndex+2
 	MarkerBG.Parent = GraphHandler.Frame
 
 	local YMarkers = Instance.new("Frame")
@@ -73,7 +75,7 @@ function Graph.new(Frame)
 	YMarkers.Position = UDim2.new(0,0,0.15,0)
 	YMarkers.BackgroundTransparency = 1
 	YMarkers.BorderSizePixel = 0
-	YMarkers.ZIndex = 2
+	YMarkers.ZIndex = BaseZIndex+2
 	YMarkers.Parent = GraphHandler.Frame
 
 	local GraphingFrame = Instance.new("Frame")
@@ -81,7 +83,7 @@ function Graph.new(Frame)
 	GraphingFrame.Size = UDim2.new(0.9,0,0.85,0)
 	GraphingFrame.Position = UDim2.new(0.1,0,0.15,0)
 	GraphingFrame.BackgroundTransparency = 1
-	GraphingFrame.ZIndex = 4
+	GraphingFrame.ZIndex = BaseZIndex+2
 	GraphingFrame.Parent = GraphHandler.Frame
 	
 	local KeyNames = Instance.new("Frame")
@@ -90,7 +92,7 @@ function Graph.new(Frame)
 	KeyNames.Position = UDim2.new(0,0,0,0)
 	KeyNames.BackgroundColor3 = Theme.LightBackground
 	KeyNames.BorderSizePixel = 0
-	KeyNames.ZIndex = 4
+	KeyNames.ZIndex = BaseZIndex+2
 	KeyNames.Parent = GraphHandler.Frame
 	
 	-- Rerender if the frame changes size since our lines will be all wonky
@@ -135,6 +137,14 @@ function Graph.new(Frame)
 		YMarkers:ClearAllChildren()
 		GraphingFrame:ClearAllChildren()
 		KeyNames:ClearAllChildren()
+		
+		BaseZIndex = GraphHandler.Frame.ZIndex
+		
+		Background.ZIndex = BaseZIndex+1
+		MarkerBG.ZIndex = BaseZIndex+2
+		YMarkers.ZIndex = BaseZIndex+2
+		GraphingFrame.ZIndex = BaseZIndex+2
+		KeyNames.ZIndex = BaseZIndex+2
 		
 		local KeyLayout = Instance.new("UIListLayout")
 		KeyLayout.FillDirection = Enum.FillDirection.Horizontal
@@ -189,7 +199,7 @@ function Graph.new(Frame)
 			Marker.Font = Enum.Font.SourceSans
 			Marker.BackgroundTransparency = 1
 			Marker.TextSize = (GraphHandler.Frame.AbsoluteSize.X*0.03)
-			Marker.ZIndex = 6
+			Marker.ZIndex = BaseZIndex+3
 			Marker.Parent = YMarkers
 		end
 		
@@ -208,6 +218,7 @@ function Graph.new(Frame)
 			KeyMarker.BackgroundTransparency = 1
 			KeyMarker.TextSize = TextSize
 			KeyMarker.Size = UDim2.new(0,Size.X+TextSize,1,0)
+			KeyMarker.ZIndex = BaseZIndex+3
 			KeyMarker.Parent = KeyNames
 			
 			-- Graph the set
@@ -240,11 +251,11 @@ function Graph.new(Frame)
 				Point.BorderSizePixel = 0
 				Point.BackgroundTransparency = 1
 				Point.Image = "rbxassetid://200182847"
-				Point.ZIndex = 15
+				Point.ZIndex = BaseZIndex+5
 
 				local Label = Instance.new("TextLabel")
 				Label.Visible = false
-				Label.Text = string.format("%.7f",Value)
+				Label.Text = string.format("%.5f",Value)
 				Label.BackgroundColor3 = Theme.LightBackground
 				Label.TextColor3 = Theme.Text
 				Label.Position = UDim2.new(1,0,0.4,0)
@@ -252,7 +263,7 @@ function Graph.new(Frame)
 				Label.TextSize = (GraphHandler.Frame.AbsoluteSize.X*0.025)
 				Label.Size = UDim2.new(0,Label.TextSize * 0.6 * #Label.Text,0,Label.TextSize * 1.1)
 				Label.Parent = Point
-				Label.ZIndex = 20
+				Label.ZIndex = BaseZIndex+10
 
 				Point.MouseEnter:Connect(function()
 					Label.Visible = true
@@ -269,6 +280,7 @@ function Graph.new(Frame)
 					Connector.BorderSizePixel = 0
 					Connector.SizeConstraint = Enum.SizeConstraint.RelativeXX
 					Connector.AnchorPoint = Vector2.new(0.5, 0.5)
+					Connector.ZIndex = BaseZIndex+4
 
 					local Size = GraphingFrame.AbsoluteSize
 					local startX, startY = Point.Position.X.Scale*Size.X, Point.Position.Y.Scale*Size.Y
