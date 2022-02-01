@@ -242,7 +242,7 @@ function Graph.new(Frame)
 				-- Create the point
 				local Point = Instance.new("ImageLabel")
 				Point.Name = Key..i
-				Point.Position = UDim2.new(0.05+((i/SetAmount)*0.9),0, 0.9 - (((Value-Min)/Range)*0.9),0)
+				Point.Position = UDim2.new(0.05+((i/SetAmount)*0.9),0, Range == 0 and 0.9 or 0.9 - (((Value-Min)/Range)*0.9),0)
 				Point.AnchorPoint = Vector2.new(0.5,0.5)
 				Point.SizeConstraint = Enum.SizeConstraint.RelativeXX
 				Point.Size = UDim2.new(math.clamp(0.5/GraphHandler.Resolution, 0.003,0.016),0,math.clamp(0.5/GraphHandler.Resolution, 0.003,0.016),0)
